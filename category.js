@@ -15,7 +15,7 @@ const getCategory = (req,res) => {
                         type['categoryID'] = doc.id
                         category.push(type)
                     })
-                    res_data['products'] = category 
+                    res_data['category'] = category 
                     successResponseGet(res,res_data)
                     return snapshot
                 }).catch(err=>{

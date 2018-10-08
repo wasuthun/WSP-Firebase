@@ -1,5 +1,6 @@
 var {firestore,cors,successResponseGet,errorResponse} = require('./admin.js')
 var productsRef = firestore.collection('products')
+var categoryRef = firestore.collection('categories')
 
 const getProductList = (req,res) => {
     return cors(req,res,()=>{
@@ -58,6 +59,47 @@ const addProduct = (req,res) => {
     })
 }
 
+const getProductListByCategoryname = (req,res) => {
+    return cors(req,res,() => {
+        if(req.method === 'POST'){
+            let categoryName = req.get('categoryName')
+            let products = []
+            let categoryID = 0
+            let res_data = {}
+            let getProducts = categoryRef.where('categoryName','==',categoryName).get()
+            .then(snap => {
+                if(!snap.empty){
+                    snap.forEach(ref=>{
+                        categoryID = ref.id
+                    })
+                }
+                return productsRef.where('categoryID','==',categoryID).get()
+            })
+            .then(snap => {
+                snap.forEach(ref => {
+                    let productData = ref.data()
+                    productData['productID'] = ref.id
+                    products.push(productData)
+                })
+                res_data['return_code'] = '200'
+                    res_data['descrip'] = 'Success to get products of category name' 
+                    res_data['products'] = products
+                    successResponseGet(res,res_data)  
+                return
+            }).catch(error=>{
+                res_data['return_code'] = '400'
+                res_data['descrip'] = 'Error Category not found' 
+                successResponseGet(res,res_data)
+            })
+
+
+            return
+        }else {
+            errorResponse(res,"Error request method")
+        }
+    })
+}
+
 module.exports = {
-    addProduct,getProductList,
+    addProduct,getProductList,getProductListByCategoryname,
 }
