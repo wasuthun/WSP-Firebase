@@ -2,9 +2,10 @@ const {functions,cors,firestore,successResponseGet,errorResponse,} = require('./
 
 const getCategory = require('./category')
 const {getCustomerList,getCustomer,updateCustomerInfo,addCustomer,} = require('./customer.js')
-const {addAccount,isUsernameTaken,isEmailTaken,getAccountList,login,getAccountByUsername,} = require('./account.js')
+const {getFeedbackList,addFeedback} = require('./feedback.js')
+const {addAccount,isUsernameTaken,isEmailTaken,getAccountList,login,getAccountByUsername,loginToAdmin,} = require('./account.js')
 const {addProduct,getProductList,getProductListByCategoryname} = require('./product.js')
-const {addProductToCartByUsername,getCartByUsername} = require('./cart.js')
+const {addProductToCartByUsername,getCartByUsername,checkoutByUsername} = require('./cart.js')
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -21,6 +22,7 @@ exports.isUsernameTaken = functions.https.onRequest(isUsernameTaken)
 exports.isEmailTaken = functions.https.onRequest(isEmailTaken)
 exports.getAccountList = functions.https.onRequest(getAccountList)
 exports.login = functions.https.onRequest(login)
+exports.loginToAdmin = functions.https.onRequest(loginToAdmin)
 exports.getAccountByUsername = functions.https.onRequest(getAccountByUsername)
 
 //Customer
@@ -42,6 +44,11 @@ exports.getCategory = functions.https.onRequest(getCategory)
 //carts
 exports.addProductToCartByUsername = functions.https.onRequest(addProductToCartByUsername)
 exports.getCartByUsername = functions.https.onRequest(getCartByUsername)
+exports.checkoutByUsername = functions.https.onRequest(checkoutByUsername)
+
+//feedback
+exports.getFeedbackList = functions.https.onRequest(getFeedbackList)
+exports.addFeedback = functions.https.onRequest(addFeedback)
 
 
 

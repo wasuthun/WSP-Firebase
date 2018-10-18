@@ -3,8 +3,11 @@ const admin = require('firebase-admin')
 const cors = require('cors')({origin: true});
 
 admin.initializeApp(functions.config().firebase)
-
 var firestore = admin.firestore()
+firestore.settings({timestampsInSnapshots: true})
+
+//in minute
+const THDifTimeZone = 420
 
 function errorResponse(res,errMsg){
     res.contentType('application/json')
@@ -18,6 +21,13 @@ function successResponseGet(res,data){
     res.contentType('application/json')
     res.send(JSON.stringify(data))
 }
+
+function getCurrentTime() {
+    var now = new Date()
+    var timeTH = new Date(now.valueOf() + THDifTimeZone * 60000);
+    return timeTH.toLocaleString()
+}
+
 module.exports = {
-    firestore,cors,functions,errorResponse,successResponseGet,
+    firestore,cors,functions,errorResponse,successResponseGet,getCurrentTime,
 }

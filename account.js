@@ -111,13 +111,10 @@ const addAccount = function (req,res){
                     'district':district,
                     'zipCode':zipCode
                 } 
-                let customerAdded = customerRef.add(data).then(ref=>{
-                    customerID = ref.id
-                    return
-                })
-                return customerAdded
+                return customerRef.add(data)
             })
-            .then(() => {
+            .then(ref => {
+                customerID = ref.id
                 let data = {
                     'username':username,
                     'password':password,
@@ -126,8 +123,7 @@ const addAccount = function (req,res){
                     'point':point,
                     'orderHistory':orderHistory
                 } 
-                var addDoc = accountsRef.add(data)
-                return
+                return accountsRef.add(data)
             })
             .then(() => {
                 let res_data = {}
@@ -205,8 +201,40 @@ const getAccountByUsername = function (req,res){
     })
 }
 
+const loginToAdmin = function (req,res){
+    return cors(req,res,()=>{
+        if(req.method==='POST'){
+            let username = req.get('username')
+            let password = req.get('password')
+
+            var account = accountsRef.where('username','==',username).where('password','==',password).where('isAdmin','==',true).get().then(snap=>{
+                let res_data = {}
+                if(!snap.empty){
+                    res_data['return_code'] = '200'
+                    res_data['descrip'] = 'Login to administration mode success.'
+                    snap.forEach(doc=>{
+                        res_data['account'] = doc.data().username 
+                        delete res_data['account'].password
+                        delete res_data['account'].isAdmin
+                    })
+                } else {
+                    res_data['return_code'] = '400'
+                    res_data['descrip'] = 'Login to administration mode failed.'
+                }
+                successResponseGet(res,res_data)
+                return snap
+            }).catch(err=>{
+                errorResponse(res,err.details)
+            })
+        }
+        else {
+            errorResponse(res,"Error request method")
+        }
+    })
+}
+
 module.exports = {
-    addAccount,isUsernameTaken,isEmailTaken,getAccountList,login,getAccountByUsername,
+    addAccount,isUsernameTaken,isEmailTaken,getAccountList,login,getAccountByUsername,loginToAdmin,
 }
 
 
