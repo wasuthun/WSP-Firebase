@@ -1,7 +1,7 @@
-var {firestore,cors,successResponseGet,errorResponse} = require('./admin.js')
+var {firestore,cors,successResponseGet,errorResponse,} = require('./admin.js')
 var ordersRef = firestore.collection('orders')
 
-exports.getOrderList = functions.https.onRequest((req,res) => {
+const getOrderList = ((req,res) => {
     return cors(req,res,()=>{
         if(req.method === 'GET'){
             var orderList = ordersRef.get()
@@ -26,3 +26,8 @@ exports.getOrderList = functions.https.onRequest((req,res) => {
         }
     })
 })
+
+module.exports = {
+    getOrderList,
+}
+

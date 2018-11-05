@@ -48,6 +48,43 @@ const addProductToCartByUsername = ((req,res)=>{
     })
 })
 
+const removeProductFromCart = ((req,res)=>{
+    return cors(req,res,() => {
+        if(req.method === 'POST'){
+            let username = req.get('username')
+            let productID = req.get('productID')
+            let quantity = req.get('quantity')
+            
+            let productInCart = {}
+
+            let removeProduct = cartRef.doc(username).collection('products').doc(productID).get()
+            .then(ref => {
+                if(ref.exists){
+                    productInCart = ref.data()
+                    productInCart['quantity'] -= quantity
+                    if(productInCart['quantity'] <= 0){
+                        return cartRef.doc(username).collection('products').doc(productID).delete()
+                    }
+                    else {
+                        return cartRef.doc(username).collection('products').doc(productID).set(productInCart)
+                    }
+                }
+                else{
+                    throw new Error('product not found in '+username+'\'s cart.')
+                }
+            })
+            .then(ref => {
+                let res_data = {}
+                res_data['return_code'] = '200'
+                res_data['descrip'] = 'Success to delete '+productID+' from '+username
+                successResponseGet(res,res_data)
+                return ref
+            }).catch(err=>{
+                errorResponse(res,err.details)
+            })
+    }})
+})
+
 const getCartByUsername = ((req,res)=>{
     return cors(req,res,() => {
         if(req.method === 'POST'){
@@ -167,5 +204,5 @@ const checkoutByUsername = ((req,res)=>{
 })
 
 module.exports = {
-    addProductToCartByUsername,getCartByUsername,checkoutByUsername,
+    addProductToCartByUsername,getCartByUsername,checkoutByUsername,removeProductFromCart,
 }

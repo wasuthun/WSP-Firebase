@@ -5,7 +5,8 @@ const {getCustomerList,getCustomer,updateCustomerInfo,addCustomer,} = require('.
 const {getFeedbackList,addFeedback} = require('./feedback.js')
 const {addAccount,isUsernameTaken,isEmailTaken,getAccountList,login,getAccountByUsername,loginToAdmin,} = require('./account.js')
 const {addProduct,getProductList,getProductListByCategoryname} = require('./product.js')
-const {addProductToCartByUsername,getCartByUsername,checkoutByUsername} = require('./cart.js')
+const {getOrderList,} = require('./order.js')
+const {addProductToCartByUsername,getCartByUsername,checkoutByUsername,removeProductFromCart,} = require('./cart.js')
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -40,11 +41,14 @@ exports.getProductListByCategoryname = functions.https.onRequest(getProductListB
 exports.getCategory = functions.https.onRequest(getCategory)
 
 //Orders
+exports.getOrderList = functions.https.onRequest(getOrderList)
 
 //carts
 exports.addProductToCartByUsername = functions.https.onRequest(addProductToCartByUsername)
 exports.getCartByUsername = functions.https.onRequest(getCartByUsername)
 exports.checkoutByUsername = functions.https.onRequest(checkoutByUsername)
+exports.removeProductFromCart = functions.https.onRequest(removeProductFromCart)
+
 
 //feedback
 exports.getFeedbackList = functions.https.onRequest(getFeedbackList)
